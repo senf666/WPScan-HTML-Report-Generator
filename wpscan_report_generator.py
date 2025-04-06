@@ -130,9 +130,8 @@ def create_html_report(data):
         {% for user in users %}
             <li>{{ user.username }}</li>
         {% endfor %}
-        {% endif %}
-
         </ul>
+        {% endif %}
     </body>
     </html>
     """
