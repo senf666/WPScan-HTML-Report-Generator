@@ -11,10 +11,21 @@ def parse_wpscan_data(data):
         "plugins": data.get("plugins", {}),
         "main_theme": data.get("main_theme", {}),
         "interesting_findings": data.get("interesting_findings", []),
-        "vulnerabilities": []
+        "vulnerabilities": [],
+        "users": []
     }
 
     # Extract vulnerabilities and plugin info
+
+    users = data.get("users", [])
+
+    if users:
+        for user in users:
+            user_data = {
+                "username": user}
+
+            report_data["users"].append(user_data)  
+
     for plugin, details in data.get("plugins", {}).items():
         vulnerabilities = details.get("vulnerabilities", [])
         version_info = details.get("version", {})
@@ -113,6 +124,15 @@ def create_html_report(data):
             </li>
         {% endfor %}
         </ul>
+        {%if users %}
+        <h3>Users found</h3>
+        <ul>
+        {% for user in users %}
+            <li>{{ user.username }}</li>
+        {% endfor %}
+        {% endif %}
+
+        </ul>
     </body>
     </html>
     """
@@ -128,7 +148,6 @@ def create_html_report(data):
 
 # Main execution to handle dynamic JSON file input
 if __name__ == "__main__":
-    # Check if a file path was provided
     if len(sys.argv) < 2:
         print("Usage: python wpscan_report_generator.py <path_to_json_file>")
         sys.exit(1)

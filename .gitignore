@@ -1,0 +1,5 @@
+.venv/
+launch.json
+example.json
+.vscode/
+wpscan_report.html
