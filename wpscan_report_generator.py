@@ -1,5 +1,6 @@
 import json
 import sys
+import os  # Import os module to handle file paths
 from jinja2 import Template
 
 # Function to parse vulnerabilities, plugins, and other important info
@@ -44,7 +45,7 @@ def parse_wpscan_data(data):
     return report_data
 
 # Function to create HTML report with colors, Interesting Findings, References, and Interesting Entries
-def create_html_report(data):
+def create_html_report(data, output_file_name):
     template_str = """
     <html>
     <head>
@@ -120,11 +121,10 @@ def create_html_report(data):
     html_content = template.render(data)
     
     # Save to HTML file
-    html_file_path = 'wpscan_report.html'
-    with open(html_file_path, 'w') as html_file:
+    with open(output_file_name, 'w') as html_file:
         html_file.write(html_content)
     
-    return html_file_path
+    return output_file_name
 
 # Main execution to handle dynamic JSON file input
 if __name__ == "__main__":
@@ -141,8 +141,10 @@ if __name__ == "__main__":
     # Parse the JSON data
     report_data = parse_wpscan_data(wpscan_data)
 
-    # Generate HTML report
-    html_report = create_html_report(report_data)
+    # Generate HTML report with the same name as the input file
+    base_name = os.path.splitext(os.path.basename(json_file_path))[0]
+    html_report_name = f"{base_name}.html"
+    html_report = create_html_report(report_data, html_report_name)
 
     print(f"HTML Report generated: {html_report}")
 
